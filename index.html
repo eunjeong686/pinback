@@ -39,7 +39,8 @@
     }
 
     button,
-    input {
+    input,
+    textarea {
       font: inherit;
     }
 
@@ -48,9 +49,9 @@
     }
 
     .shell {
-      width: min(1120px, calc(100% - 32px));
+      width: min(1180px, calc(100% - 32px));
       margin: 0 auto;
-      padding: 32px 0 48px;
+      padding: 32px 0 96px;
     }
 
     .hero {
@@ -58,20 +59,20 @@
       grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
       gap: 36px;
       align-items: center;
-      min-height: 320px;
-      padding: 20px 0 32px;
+      min-height: 290px;
+      padding: 20px 0 30px;
     }
 
     .hero h1 {
       margin: 0;
-      font-size: clamp(48px, 9vw, 104px);
-      line-height: 0.92;
+      font-size: clamp(46px, 9vw, 96px);
+      line-height: 0.94;
       letter-spacing: 0;
     }
 
     .hero p {
-      max-width: 560px;
-      margin: 22px 0 0;
+      max-width: 610px;
+      margin: 18px 0 0;
       color: var(--muted);
       font-size: clamp(16px, 2vw, 20px);
       line-height: 1.65;
@@ -79,7 +80,7 @@
 
     .lane {
       position: relative;
-      min-height: 230px;
+      min-height: 210px;
       border-radius: 8px;
       overflow: hidden;
       background:
@@ -123,40 +124,55 @@
       animation: rollIn 900ms cubic-bezier(.2,.8,.2,1) both;
     }
 
-    .app {
+    .workspace {
       display: grid;
-      grid-template-columns: minmax(0, 0.95fr) minmax(320px, 1.05fr);
-      gap: 24px;
+      grid-template-columns: minmax(300px, 0.72fr) minmax(0, 1.28fr);
+      gap: 22px;
       align-items: start;
     }
 
     .panel {
-      background: rgba(255, 250, 240, 0.9);
+      background: rgba(255, 250, 240, 0.92);
       border: 1px solid rgba(222, 212, 195, 0.9);
       border-radius: 8px;
       box-shadow: var(--shadow);
       backdrop-filter: blur(12px);
+      overflow: hidden;
+    }
+
+    .setup {
+      position: sticky;
+      top: 16px;
     }
 
     .panel-header,
     .panel-body {
-      padding: 22px;
+      padding: 20px;
     }
 
     .panel-header {
       border-bottom: 1px solid var(--line);
     }
 
-    .panel-header h2 {
+    .panel-header h2,
+    .section-title {
       margin: 0;
-      font-size: 22px;
-      line-height: 1.2;
+      font-size: 21px;
+      line-height: 1.25;
     }
 
-    .panel-header p {
+    .panel-header p,
+    .hint {
       margin: 8px 0 0;
       color: var(--muted);
       line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
     }
 
     .field {
@@ -168,11 +184,12 @@
     .label {
       color: var(--neutral);
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     input[type="number"],
-    input[type="text"] {
+    input[type="text"],
+    textarea {
       width: 100%;
       min-height: 52px;
       border: 1px solid var(--line);
@@ -185,200 +202,80 @@
       transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
     }
 
+    textarea {
+      min-height: 198px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
     input[type="number"]:focus,
-    input[type="text"]:focus {
+    input[type="text"]:focus,
+    textarea:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.14);
       background: #ffffff;
     }
 
-    .team-count {
+    .actions {
       display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-bottom: 20px;
+      margin-top: 16px;
     }
 
-    .teams {
-      display: grid;
-      gap: 12px;
-    }
-
-    .team-row {
-      display: grid;
-      grid-template-columns: 1fr 120px;
-      gap: 10px;
-      padding: 12px;
-      border: 1px solid var(--line);
+    .button {
+      min-height: 50px;
+      border: 0;
       border-radius: 8px;
-      background: rgba(255, 253, 247, 0.72);
-      animation: rise 260ms ease both;
-    }
-
-    .team-row input[data-team-score] {
-      font-size: 18px;
+      padding: 0 14px;
+      color: #fff;
+      background: var(--accent);
+      font-size: 15px;
       font-weight: 900;
-      text-align: right;
+      transition: transform 160ms ease, background 160ms ease, opacity 160ms ease;
     }
 
-    .winner-box {
-      margin-top: 18px;
-      padding-top: 18px;
-      border-top: 1px solid var(--line);
+    .button:hover {
+      background: var(--accent-strong);
+      transform: translateY(-1px);
     }
 
-    .winner-options {
-      display: grid;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .winner-option {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-height: 44px;
+    .button.secondary {
       border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 9px 11px;
       background: #fffdf7;
       color: var(--ink);
-      transition: border-color 160ms ease, background 160ms ease;
     }
 
-    .winner-option:has(input:checked) {
-      border-color: var(--accent);
-      background: rgba(15, 118, 110, 0.1);
+    .button.secondary:hover {
+      background: #f4ecdd;
     }
 
-    .winner-option input {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--accent);
+    .button:disabled {
+      opacity: 0.48;
+      cursor: not-allowed;
+      transform: none;
     }
 
     .notice {
-      margin-top: 16px;
+      margin-top: 14px;
       border-radius: 8px;
       background: rgba(180, 35, 24, 0.09);
       color: #822018;
       padding: 12px 14px;
       line-height: 1.5;
       display: none;
+      font-size: 14px;
     }
 
     .notice.is-visible {
       display: block;
     }
 
-    .results {
-      display: grid;
-      gap: 12px;
-    }
-
-    .empty {
-      min-height: 220px;
-      display: grid;
-      place-items: center;
-      color: var(--muted);
-      text-align: center;
-      line-height: 1.6;
-      padding: 24px;
-    }
-
-    .result-row {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #fffdf7;
-      overflow: hidden;
-      animation: rise 260ms ease both;
-    }
-
-    .result-main {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 12px;
-      align-items: center;
-      padding: 16px;
-    }
-
-    .rank {
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .result-name {
-      margin-top: 4px;
-      font-size: 20px;
-      font-weight: 900;
-    }
-
-    .result-score {
-      margin-top: 4px;
-      color: var(--neutral);
-      font-size: 14px;
-    }
-
-    .amount {
-      font-size: clamp(22px, 4vw, 34px);
-      font-weight: 950;
-      white-space: nowrap;
-      text-align: right;
-    }
-
-    .amount.gain {
-      color: var(--gain);
-    }
-
-    .amount.loss {
-      color: var(--loss);
-    }
-
-    .amount.zero {
-      color: var(--neutral);
-    }
-
-    details {
-      border-top: 1px solid var(--line);
-    }
-
-    summary {
-      padding: 12px 16px;
-      color: var(--neutral);
-      font-weight: 800;
-      cursor: pointer;
-      list-style: none;
-    }
-
-    summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .breakdown {
-      display: grid;
-      gap: 8px;
-      padding: 0 16px 16px;
-    }
-
-    .breakdown-line {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      color: var(--neutral);
-      font-size: 14px;
-      line-height: 1.45;
-    }
-
-    .breakdown-line strong {
-      color: var(--ink);
-      white-space: nowrap;
-    }
-
-    .summary-strip {
+    .stats {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
-      margin-bottom: 16px;
+      margin-top: 14px;
     }
 
     .metric {
@@ -398,7 +295,263 @@
     .metric strong {
       display: block;
       margin-top: 5px;
+      font-size: 17px;
+      line-height: 1.25;
+    }
+
+    .content-stack {
+      display: grid;
+      gap: 18px;
+    }
+
+    .empty {
+      min-height: 260px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.6;
+      padding: 24px;
+    }
+
+    .game {
+      background: rgba(255, 250, 240, 0.92);
+      border: 1px solid rgba(222, 212, 195, 0.9);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      animation: rise 260ms ease both;
+    }
+
+    .game-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .game-head h3 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .game-status {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      text-align: right;
+    }
+
+    .teams-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      padding: 14px;
+    }
+
+    .team-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fffdf7;
+      overflow: hidden;
+    }
+
+    .team-card.is-winner {
+      border-color: rgba(15, 118, 110, 0.7);
+      box-shadow: inset 0 0 0 1px rgba(15, 118, 110, 0.16);
+    }
+
+    .team-card-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .team-title {
+      font-weight: 950;
+    }
+
+    .team-total {
+      color: var(--neutral);
+      font-size: 13px;
+      font-weight: 900;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .player-list {
+      display: grid;
+    }
+
+    .player-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 96px;
+      gap: 8px;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(222, 212, 195, 0.72);
+    }
+
+    .player-row:last-child {
+      border-bottom: 0;
+    }
+
+    .player-name {
+      min-width: 0;
+      font-weight: 850;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .score-input {
+      min-height: 44px;
       font-size: 18px;
+      font-weight: 950;
+      text-align: right;
+    }
+
+    .team-result {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 11px 12px;
+      border-top: 1px solid var(--line);
+      background: rgba(244, 236, 221, 0.5);
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .amount {
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .gain {
+      color: var(--gain);
+    }
+
+    .loss {
+      color: var(--loss);
+    }
+
+    .zero {
+      color: var(--neutral);
+    }
+
+    .winner-box {
+      padding: 0 14px 14px;
+    }
+
+    .winner-options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .winner-option {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 9px 11px;
+      background: #fffdf7;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .winner-option:has(input:checked) {
+      border-color: var(--accent);
+      background: rgba(15, 118, 110, 0.1);
+    }
+
+    .winner-option input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      flex: 0 0 auto;
+    }
+
+    .result-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .result-row {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fffdf7;
+      overflow: hidden;
+    }
+
+    .result-main {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 14px;
+    }
+
+    .rank {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .result-name {
+      margin-top: 4px;
+      font-size: 19px;
+      font-weight: 950;
+    }
+
+    .result-amount {
+      font-size: clamp(22px, 4vw, 32px);
+      text-align: right;
+    }
+
+    details {
+      border-top: 1px solid var(--line);
+    }
+
+    summary {
+      padding: 11px 14px;
+      color: var(--neutral);
+      font-weight: 850;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .breakdown {
+      display: grid;
+      gap: 7px;
+      padding: 0 14px 14px;
+    }
+
+    .breakdown-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--neutral);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .breakdown-line strong {
+      white-space: nowrap;
     }
 
     .mobile-jump {
@@ -417,11 +570,7 @@
       align-items: center;
       justify-content: center;
       font-size: 16px;
-      font-weight: 900;
-    }
-
-    .mobile-jump.is-visible {
-      display: none;
+      font-weight: 950;
     }
 
     @keyframes rise {
@@ -446,29 +595,27 @@
       }
     }
 
-    @media (max-width: 860px) {
+    @media (max-width: 920px) {
       .shell {
-        width: min(100% - 24px, 680px);
+        width: min(100% - 24px, 720px);
         padding-top: 20px;
-        padding-bottom: 88px;
       }
 
       .hero,
-      .app {
+      .workspace {
         grid-template-columns: 1fr;
       }
 
-      .hero {
-        gap: 20px;
-        min-height: 0;
+      .setup {
+        position: static;
       }
 
       .lane {
-        min-height: 170px;
+        min-height: 160px;
       }
     }
 
-    @media (max-width: 560px) {
+    @media (max-width: 640px) {
       body {
         background: linear-gradient(180deg, #f7f4ed 0%, #ece2d1 100%);
       }
@@ -479,6 +626,7 @@
       }
 
       .hero {
+        min-height: 0;
         padding: 8px 0 14px;
       }
 
@@ -502,26 +650,25 @@
         padding: 14px;
       }
 
-      .panel-header h2 {
-        font-size: 19px;
-      }
-
-      .panel-header p {
-        font-size: 14px;
-      }
-
-      .result-main,
-      .summary-strip {
+      .grid,
+      .stats,
+      .actions,
+      .teams-grid,
+      .winner-options,
+      .result-main {
         grid-template-columns: 1fr;
       }
 
-      .team-row {
-        grid-template-columns: minmax(0, 1fr) minmax(118px, 38%);
-        gap: 8px;
-        padding: 10px;
+      .game-head {
+        align-items: flex-start;
       }
 
-      .amount {
+      .player-row {
+        grid-template-columns: minmax(0, 1fr) 92px;
+        padding: 9px 10px;
+      }
+
+      .result-amount {
         text-align: left;
       }
 
@@ -531,11 +678,14 @@
     }
 
     @media (max-width: 360px) {
-      .team-row {
+      .player-row,
+      .team-card-head,
+      .team-result {
         grid-template-columns: 1fr;
       }
 
-      .team-row input[data-team-score] {
+      .score-input,
+      .team-total {
         text-align: left;
       }
     }
@@ -546,7 +696,7 @@
     <section class="hero" aria-labelledby="page-title">
       <div>
         <h1 id="page-title">핀백 계산기</h1>
-        <p>팀 수와 총 핀수만 입력하면 팀별로 받을 돈과 낼 돈을 바로 계산합니다.</p>
+        <p>참가자 명단을 넣으면 게임별 팀을 자동으로 섞고, 점수 입력 후 개인별 누적 정산까지 계산합니다.</p>
       </div>
       <div class="lane" aria-hidden="true">
         <div class="ball"></div>
@@ -554,72 +704,145 @@
       </div>
     </section>
 
-    <section class="app" aria-label="핀백 계산 영역">
-      <form class="panel" id="calculatorForm">
+    <section class="workspace" aria-label="핀백 계산 영역">
+      <aside class="panel setup">
         <div class="panel-header">
-          <h2>팀 입력</h2>
-          <p>총 핀수는 핸디나 팀원 기준을 반영한 최종 점수로 입력하세요.</p>
+          <h2>기본 설정</h2>
+          <p>팀 수, 팀원 수, 게임 수를 정하고 참가자 이름을 한 줄에 한 명씩 입력하세요.</p>
         </div>
         <div class="panel-body">
-          <div class="team-count">
+          <div class="grid">
             <div class="field">
               <label for="teamCount">팀 수</label>
-              <input id="teamCount" type="number" min="2" max="12" step="1" value="4" inputmode="numeric">
+              <input id="teamCount" type="number" min="2" max="8" step="1" value="4" inputmode="numeric">
+            </div>
+            <div class="field">
+              <label for="playersPerTeam">팀원 수</label>
+              <input id="playersPerTeam" type="number" min="1" max="6" step="1" value="3" inputmode="numeric">
+            </div>
+            <div class="field">
+              <label for="gameCount">게임 수</label>
+              <input id="gameCount" type="number" min="1" max="12" step="1" value="4" inputmode="numeric">
             </div>
           </div>
 
-          <div class="teams" id="teamsContainer"></div>
+          <div class="field" style="margin-top: 14px;">
+            <label for="playerNames">참가자 명단</label>
+            <textarea id="playerNames" placeholder="현준&#10;준석&#10;나나&#10;지훈"></textarea>
+            <p class="hint" id="nameHint">필요 인원: 12명</p>
+          </div>
 
-          <div class="winner-box" id="winnerBox" hidden>
-            <div class="label">최종 1등팀</div>
-            <div class="winner-options" id="winnerOptions"></div>
+          <div class="actions">
+            <button class="button" type="button" id="buildTeams">팀 만들기</button>
+            <button class="button secondary" type="button" id="reshuffleTeams" disabled>다시 섞기</button>
           </div>
 
           <div class="notice" id="notice" role="alert"></div>
-        </div>
-      </form>
 
-      <section class="panel" id="resultsPanel" aria-live="polite">
-        <div class="panel-header">
-          <h2>정산 결과</h2>
-          <p>상대별 기본 정산은 만원 상한, 최종 1등 보너스는 별도입니다.</p>
-        </div>
-        <div class="panel-body">
-          <div id="summaryStrip" class="summary-strip" hidden></div>
-          <div class="results" id="results">
-            <div class="empty">팀 점수를 입력하면 결과가 표시됩니다.</div>
+          <div class="stats" id="setupStats">
+            <div class="metric"><span>팀</span><strong>4팀</strong></div>
+            <div class="metric"><span>팀원</span><strong>3명씩</strong></div>
+            <div class="metric"><span>게임</span><strong>4게임</strong></div>
           </div>
         </div>
-      </section>
+      </aside>
+
+      <div class="content-stack">
+        <section class="panel" id="resultsPanel">
+          <div class="panel-header">
+            <h2>개인별 최종 정산</h2>
+            <p>각 게임에서 본인이 속한 팀 금액을 그대로 누적합니다.</p>
+          </div>
+          <div class="panel-body">
+            <div id="personalResults" class="result-list">
+              <div class="empty">팀을 만들고 개인 점수를 입력하면 결과가 표시됩니다.</div>
+            </div>
+          </div>
+        </section>
+
+        <section id="gamesContainer" class="content-stack" aria-label="게임별 점수 입력">
+          <div class="panel">
+            <div class="empty">참가자 명단을 입력한 뒤 팀을 만들어 주세요.</div>
+          </div>
+        </section>
+      </div>
     </section>
   </main>
 
-  <button class="mobile-jump" id="mobileJump" type="button" hidden>정산 결과 보기</button>
+  <button class="mobile-jump" id="mobileJump" type="button" hidden>최종 정산 보기</button>
 
   <script>
-    const MAX_TEAMS = 12;
-    const MIN_TEAMS = 2;
     const RATE_PER_PIN = 100;
     const PAIR_CAP = 10000;
     const WINNER_BONUS = 2000;
+    const MIN_TEAMS = 2;
+    const MAX_TEAMS = 8;
+    const MIN_PLAYERS_PER_TEAM = 1;
+    const MAX_PLAYERS_PER_TEAM = 6;
+    const MIN_GAMES = 1;
+    const MAX_GAMES = 12;
 
     const teamCountInput = document.querySelector("#teamCount");
-    const teamsContainer = document.querySelector("#teamsContainer");
-    const winnerBox = document.querySelector("#winnerBox");
-    const winnerOptions = document.querySelector("#winnerOptions");
+    const playersPerTeamInput = document.querySelector("#playersPerTeam");
+    const gameCountInput = document.querySelector("#gameCount");
+    const playerNamesInput = document.querySelector("#playerNames");
+    const buildTeamsButton = document.querySelector("#buildTeams");
+    const reshuffleTeamsButton = document.querySelector("#reshuffleTeams");
     const notice = document.querySelector("#notice");
-    const results = document.querySelector("#results");
+    const nameHint = document.querySelector("#nameHint");
+    const setupStats = document.querySelector("#setupStats");
+    const gamesContainer = document.querySelector("#gamesContainer");
+    const personalResults = document.querySelector("#personalResults");
     const resultsPanel = document.querySelector("#resultsPanel");
-    const summaryStrip = document.querySelector("#summaryStrip");
     const mobileJump = document.querySelector("#mobileJump");
-    let selectedWinnerId = "team-1";
-
     const won = new Intl.NumberFormat("ko-KR");
 
-    function clampTeamCount(value) {
+    const state = {
+      players: [],
+      schedule: [],
+      scores: {},
+      selectedWinners: {}
+    };
+
+    function clampInt(value, min, max) {
       const parsed = Number.parseInt(value, 10);
-      if (Number.isNaN(parsed)) return MIN_TEAMS;
-      return Math.min(MAX_TEAMS, Math.max(MIN_TEAMS, parsed));
+      if (Number.isNaN(parsed)) return min;
+      return Math.min(max, Math.max(min, parsed));
+    }
+
+    function getConfig() {
+      return {
+        teamCount: clampInt(teamCountInput.value, MIN_TEAMS, MAX_TEAMS),
+        playersPerTeam: clampInt(playersPerTeamInput.value, MIN_PLAYERS_PER_TEAM, MAX_PLAYERS_PER_TEAM),
+        gameCount: clampInt(gameCountInput.value, MIN_GAMES, MAX_GAMES)
+      };
+    }
+
+    function syncConfigInputs() {
+      const config = getConfig();
+      teamCountInput.value = config.teamCount;
+      playersPerTeamInput.value = config.playersPerTeam;
+      gameCountInput.value = config.gameCount;
+      const required = config.teamCount * config.playersPerTeam;
+      const names = parseNames();
+      nameHint.textContent = `필요 인원: ${required}명 · 현재 ${names.length}명`;
+      setupStats.innerHTML = `
+        <div class="metric"><span>팀</span><strong>${config.teamCount}팀</strong></div>
+        <div class="metric"><span>팀원</span><strong>${config.playersPerTeam}명씩</strong></div>
+        <div class="metric"><span>게임</span><strong>${config.gameCount}게임</strong></div>
+      `;
+    }
+
+    function parseNames() {
+      return playerNamesInput.value
+        .split(/\r?\n|,/)
+        .map((name) => name.trim())
+        .filter(Boolean);
+    }
+
+    function showNotice(message) {
+      notice.textContent = message;
+      notice.classList.toggle("is-visible", Boolean(message));
     }
 
     function formatMoney(value, withSign = true) {
@@ -627,47 +850,10 @@
       return `${sign}${won.format(value)}원`;
     }
 
-    function getTeams() {
-      return [...teamsContainer.querySelectorAll(".team-row")].map((row, index) => {
-        const nameInput = row.querySelector("[data-team-name]");
-        const scoreInput = row.querySelector("[data-team-score]");
-        return {
-          id: row.dataset.teamId,
-          index,
-          name: nameInput.value.trim() || `${index + 1}팀`,
-          scoreText: scoreInput.value.trim(),
-          score: Number(scoreInput.value)
-        };
-      });
-    }
-
-    function renderTeams(count) {
-      const currentTeams = getTeams();
-      teamsContainer.innerHTML = "";
-
-      for (let i = 0; i < count; i += 1) {
-        const previous = currentTeams[i];
-        const row = document.createElement("div");
-        row.className = "team-row";
-        row.dataset.teamId = previous?.id || `team-${i + 1}`;
-        row.innerHTML = `
-          <div class="field">
-            <label for="teamName${i}">팀명</label>
-            <input id="teamName${i}" data-team-name type="text" enterkeyhint="next" value="${escapeHtml(previous?.name || `${i + 1}팀`)}">
-          </div>
-          <div class="field">
-            <label for="teamScore${i}">총 핀수</label>
-            <input id="teamScore${i}" data-team-score type="number" min="0" step="1" inputmode="numeric" enterkeyhint="next" value="${escapeHtml(previous?.scoreText || "")}">
-          </div>
-        `;
-        teamsContainer.appendChild(row);
-      }
-
-      if (!getTeams().some((team) => team.id === selectedWinnerId)) {
-        selectedWinnerId = "team-1";
-      }
-
-      calculateAndRender();
+    function amountClass(value) {
+      if (value > 0) return "gain";
+      if (value < 0) return "loss";
+      return "zero";
     }
 
     function escapeHtml(value) {
@@ -678,35 +864,164 @@
         .replaceAll(">", "&gt;");
     }
 
-    function validateTeams(teams) {
-      const invalid = teams.find((team) => team.scoreText === "" || !Number.isFinite(team.score) || team.score < 0);
-      if (invalid) {
-        return `${invalid.name}의 총 핀수를 입력하세요.`;
+    function scoreKey(gameIndex, teamIndex, playerId) {
+      return `${gameIndex}:${teamIndex}:${playerId}`;
+    }
+
+    function pairKey(a, b) {
+      return [a, b].sort().join("|");
+    }
+
+    function shuffle(array) {
+      const copy = [...array];
+      for (let i = copy.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function partitionTeams(players, teamCount, playersPerTeam) {
+      const shuffled = shuffle(players);
+      const teams = [];
+      for (let teamIndex = 0; teamIndex < teamCount; teamIndex += 1) {
+        const start = teamIndex * playersPerTeam;
+        teams.push(shuffled.slice(start, start + playersPerTeam));
+      }
+      return teams;
+    }
+
+    function scoreScheduleCandidate(teams, pairHistory) {
+      let score = 0;
+      teams.forEach((team) => {
+        for (let i = 0; i < team.length; i += 1) {
+          for (let j = i + 1; j < team.length; j += 1) {
+            const count = pairHistory.get(pairKey(team[i].id, team[j].id)) || 0;
+            score += count * count + count;
+          }
+        }
+      });
+      return score;
+    }
+
+    function addPairsToHistory(teams, pairHistory) {
+      teams.forEach((team) => {
+        for (let i = 0; i < team.length; i += 1) {
+          for (let j = i + 1; j < team.length; j += 1) {
+            const key = pairKey(team[i].id, team[j].id);
+            pairHistory.set(key, (pairHistory.get(key) || 0) + 1);
+          }
+        }
+      });
+    }
+
+    function buildBalancedSchedule(players, config) {
+      const pairHistory = new Map();
+      const schedule = [];
+
+      for (let gameIndex = 0; gameIndex < config.gameCount; gameIndex += 1) {
+        let bestTeams = null;
+        let bestScore = Number.POSITIVE_INFINITY;
+        const attempts = Math.max(250, players.length * config.gameCount * 18);
+
+        for (let attempt = 0; attempt < attempts; attempt += 1) {
+          const candidate = partitionTeams(players, config.teamCount, config.playersPerTeam);
+          const candidateScore = scoreScheduleCandidate(candidate, pairHistory);
+          if (candidateScore < bestScore) {
+            bestTeams = candidate;
+            bestScore = candidateScore;
+          }
+          if (bestScore === 0) break;
+        }
+
+        addPairsToHistory(bestTeams, pairHistory);
+        schedule.push(bestTeams);
+      }
+
+      return schedule;
+    }
+
+    function validateSetup() {
+      const config = getConfig();
+      const names = parseNames();
+      const required = config.teamCount * config.playersPerTeam;
+      const uniqueNames = new Set(names);
+
+      if (names.length !== required) {
+        return `참가자 이름은 정확히 ${required}명이어야 합니다. 현재 ${names.length}명입니다.`;
+      }
+      if (uniqueNames.size !== names.length) {
+        return "같은 이름이 두 번 들어가면 개인별 합산이 갈립니다. 이름을 고유하게 입력하세요.";
       }
       return "";
     }
 
-    function renderWinnerOptions(teams) {
-      const maxScore = Math.max(...teams.map((team) => team.score));
-      const topTeams = teams.filter((team) => team.score === maxScore);
-      const showChoice = topTeams.length > 1;
-      const candidates = showChoice ? topTeams : teams.filter((team) => team.score === maxScore);
-
-      if (!candidates.some((team) => team.id === selectedWinnerId)) {
-        selectedWinnerId = candidates[0]?.id || teams[0].id;
-      }
-
-      winnerBox.hidden = false;
-      winnerOptions.innerHTML = candidates.map((team) => `
-        <label class="winner-option">
-          <input type="radio" name="winner" value="${team.id}" ${team.id === selectedWinnerId ? "checked" : ""}>
-          <span>${escapeHtml(team.name)} · ${won.format(team.score)}핀${showChoice ? " · 동점 기준으로 선택" : ""}</span>
-        </label>
-      `).join("");
+    function createPlayers(names) {
+      return names.map((name, index) => ({
+        id: `player-${index + 1}`,
+        name
+      }));
     }
 
-    function calculateSettlements(teams) {
-      const winnerId = selectedWinnerId;
+    function buildTeams() {
+      syncConfigInputs();
+      const validationMessage = validateSetup();
+      if (validationMessage) {
+        showNotice(validationMessage);
+        return;
+      }
+
+      const config = getConfig();
+      state.players = createPlayers(parseNames());
+      state.schedule = buildBalancedSchedule(state.players, config);
+      state.scores = {};
+      state.selectedWinners = {};
+      showNotice("");
+      reshuffleTeamsButton.disabled = false;
+      renderAll();
+    }
+
+    function getTeamScores(gameIndex) {
+      const game = state.schedule[gameIndex];
+      if (!game) return [];
+
+      return game.map((players, teamIndex) => {
+        let total = 0;
+        let complete = true;
+        const playerScores = players.map((player) => {
+          const raw = state.scores[scoreKey(gameIndex, teamIndex, player.id)] || "";
+          const score = Number(raw);
+          const valid = raw !== "" && Number.isFinite(score) && score >= 0;
+          if (!valid) complete = false;
+          if (valid) total += score;
+          return { player, raw, score: valid ? score : null };
+        });
+
+        return {
+          id: `game-${gameIndex}-team-${teamIndex}`,
+          gameIndex,
+          teamIndex,
+          name: `${teamIndex + 1}팀`,
+          players,
+          playerScores,
+          score: total,
+          complete
+        };
+      });
+    }
+
+    function chooseWinnerId(teams) {
+      const completeTeams = teams.filter((team) => team.complete);
+      if (completeTeams.length !== teams.length) return "";
+      const maxScore = Math.max(...teams.map((team) => team.score));
+      const topTeams = teams.filter((team) => team.score === maxScore);
+      const savedWinner = state.selectedWinners[String(teams[0].gameIndex)];
+      if (topTeams.some((team) => team.id === savedWinner)) return savedWinner;
+      state.selectedWinners[String(teams[0].gameIndex)] = topTeams[0].id;
+      return topTeams[0].id;
+    }
+
+    function calculateTeamSettlements(teams, winnerId) {
       const totals = new Map(teams.map((team) => [team.id, 0]));
       const details = new Map(teams.map((team) => [team.id, []]));
 
@@ -737,59 +1052,164 @@
 
           totals.set(a.id, totals.get(a.id) + aDelta);
           totals.set(b.id, totals.get(b.id) + bDelta);
-
           details.get(a.id).push({ opponent: b.name, amount: aDelta });
           details.get(b.id).push({ opponent: a.name, amount: bDelta });
         }
       }
 
-      return teams
-        .map((team) => ({
-          ...team,
-          total: totals.get(team.id),
-          details: details.get(team.id),
-          isWinner: team.id === winnerId
-        }))
-        .sort((a, b) => b.score - a.score || b.total - a.total || a.index - b.index);
+      return teams.map((team) => ({
+        ...team,
+        total: totals.get(team.id),
+        details: details.get(team.id),
+        isWinner: team.id === winnerId
+      }));
     }
 
-    function amountClass(value) {
-      if (value > 0) return "gain";
-      if (value < 0) return "loss";
-      return "zero";
+    function calculateGame(gameIndex) {
+      const teams = getTeamScores(gameIndex);
+      const complete = teams.length > 0 && teams.every((team) => team.complete);
+      if (!complete) {
+        return { gameIndex, complete: false, teams, settledTeams: [] };
+      }
+      const winnerId = chooseWinnerId(teams);
+      return {
+        gameIndex,
+        complete: true,
+        teams,
+        winnerId,
+        settledTeams: calculateTeamSettlements(teams, winnerId)
+      };
     }
 
-    function renderSummary(settlements) {
-      const winner = settlements.find((team) => team.isWinner);
-      const biggestGain = settlements.reduce((best, team) => team.total > best.total ? team : best, settlements[0]);
-      const biggestLoss = settlements.reduce((worst, team) => team.total < worst.total ? team : worst, settlements[0]);
+    function calculateAllGames() {
+      return state.schedule.map((_, gameIndex) => calculateGame(gameIndex));
+    }
 
-      summaryStrip.hidden = false;
-      summaryStrip.innerHTML = `
-        <div class="metric"><span>최종 1등</span><strong>${escapeHtml(winner.name)}</strong></div>
-        <div class="metric"><span>최대 수령</span><strong>${escapeHtml(biggestGain.name)} ${formatMoney(biggestGain.total)}</strong></div>
-        <div class="metric"><span>최대 지불</span><strong>${escapeHtml(biggestLoss.name)} ${formatMoney(biggestLoss.total)}</strong></div>
+    function calculatePersonalTotals(gameResults) {
+      const totals = new Map(state.players.map((player) => [player.id, {
+        player,
+        total: 0,
+        records: []
+      }]));
+
+      gameResults.forEach((game) => {
+        if (!game.complete) return;
+        game.settledTeams.forEach((team) => {
+          team.players.forEach((player) => {
+            const entry = totals.get(player.id);
+            entry.total += team.total;
+            entry.records.push({
+              gameIndex: game.gameIndex,
+              teamName: team.name,
+              teamScore: team.score,
+              amount: team.total
+            });
+          });
+        });
+      });
+
+      return [...totals.values()].sort((a, b) => b.total - a.total || a.player.name.localeCompare(b.player.name, "ko"));
+    }
+
+    function renderWinnerOptions(game, topTeams) {
+      if (topTeams.length <= 1) return "";
+      const selected = state.selectedWinners[String(game.gameIndex)] || topTeams[0].id;
+      return `
+        <div class="winner-box">
+          <div class="label">최종 1등팀 선택</div>
+          <div class="winner-options">
+            ${topTeams.map((team) => `
+              <label class="winner-option">
+                <input type="radio" name="winner-${game.gameIndex}" value="${team.id}" ${team.id === selected ? "checked" : ""}>
+                <span>${team.name} · ${won.format(team.score)}핀</span>
+              </label>
+            `).join("")}
+          </div>
+        </div>
       `;
     }
 
-    function renderResults(settlements) {
-      results.innerHTML = settlements.map((team, index) => `
+    function renderGames(gameResults) {
+      if (!state.schedule.length) {
+        gamesContainer.innerHTML = `<div class="panel"><div class="empty">참가자 명단을 입력한 뒤 팀을 만들어 주세요.</div></div>`;
+        return;
+      }
+
+      gamesContainer.innerHTML = gameResults.map((game) => {
+        const teamsForRender = game.complete ? game.settledTeams : game.teams;
+        const completeCount = game.teams.filter((team) => team.complete).length;
+        const maxScore = game.complete ? Math.max(...game.teams.map((team) => team.score)) : null;
+        const topTeams = game.complete ? game.settledTeams.filter((team) => team.score === maxScore) : [];
+
+        return `
+          <article class="game">
+            <div class="game-head">
+              <h3>${game.gameIndex + 1}게임</h3>
+              <div class="game-status">${completeCount}/${game.teams.length}팀 점수 입력</div>
+            </div>
+            <div class="teams-grid">
+              ${teamsForRender.map((team) => `
+                <section class="team-card ${team.isWinner ? "is-winner" : ""}">
+                  <div class="team-card-head">
+                    <div class="team-title">${team.name}${team.isWinner ? " · 최종 1등" : ""}</div>
+                    <div class="team-total">합계 ${team.complete ? `${won.format(team.score)}핀` : "-"}</div>
+                  </div>
+                  <div class="player-list">
+                    ${team.playerScores.map(({ player, raw }) => `
+                      <label class="player-row">
+                        <span class="player-name">${escapeHtml(player.name)}</span>
+                        <input class="score-input" data-score-input data-game="${game.gameIndex}" data-team="${team.teamIndex}" data-player="${player.id}" type="number" min="0" step="1" inputmode="numeric" enterkeyhint="next" value="${escapeHtml(raw)}">
+                      </label>
+                    `).join("")}
+                  </div>
+                  <div class="team-result">
+                    <span>개인별 적용 금액</span>
+                    <strong class="amount ${game.complete ? amountClass(team.total) : "zero"}">${game.complete ? formatMoney(team.total) : "-"}</strong>
+                  </div>
+                </section>
+              `).join("")}
+            </div>
+            ${renderWinnerOptions(game, topTeams)}
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderPersonalResults(gameResults) {
+      if (!state.schedule.length) {
+        personalResults.innerHTML = `<div class="empty">팀을 만들고 개인 점수를 입력하면 결과가 표시됩니다.</div>`;
+        mobileJump.hidden = true;
+        mobileJump.classList.remove("is-visible");
+        return;
+      }
+
+      const completeGames = gameResults.filter((game) => game.complete);
+      if (!completeGames.length) {
+        personalResults.innerHTML = `<div class="empty">한 게임의 모든 점수를 입력하면 개인별 누적 정산이 표시됩니다.</div>`;
+        mobileJump.hidden = true;
+        mobileJump.classList.remove("is-visible");
+        return;
+      }
+
+      const personalTotals = calculatePersonalTotals(gameResults);
+      mobileJump.hidden = false;
+      mobileJump.classList.add("is-visible");
+      personalResults.innerHTML = personalTotals.map((entry, index) => `
         <article class="result-row">
           <div class="result-main">
             <div>
-              <div class="rank">${index + 1}위${team.isWinner ? " · 최종 1등" : ""}</div>
-              <div class="result-name">${escapeHtml(team.name)}</div>
-              <div class="result-score">${won.format(team.score)}핀</div>
+              <div class="rank">${index + 1}위 · ${entry.records.length}게임 반영</div>
+              <div class="result-name">${escapeHtml(entry.player.name)}</div>
             </div>
-            <div class="amount ${amountClass(team.total)}">${formatMoney(team.total)}</div>
+            <div class="amount result-amount ${amountClass(entry.total)}">${formatMoney(entry.total)}</div>
           </div>
           <details>
-            <summary>상대별 내역</summary>
+            <summary>게임별 내역</summary>
             <div class="breakdown">
-              ${team.details.map((detail) => `
+              ${entry.records.map((record) => `
                 <div class="breakdown-line">
-                  <span>${escapeHtml(detail.opponent)} 상대</span>
-                  <strong class="${amountClass(detail.amount)}">${formatMoney(detail.amount)}</strong>
+                  <span>${record.gameIndex + 1}게임 ${record.teamName} · ${won.format(record.teamScore)}핀</span>
+                  <strong class="${amountClass(record.amount)}">${formatMoney(record.amount)}</strong>
                 </div>
               `).join("")}
             </div>
@@ -798,67 +1218,69 @@
       `).join("");
     }
 
-    function showNotice(message) {
-      notice.textContent = message;
-      notice.classList.toggle("is-visible", Boolean(message));
+    function renderAll() {
+      syncConfigInputs();
+      const gameResults = calculateAllGames();
+      renderPersonalResults(gameResults);
+      renderGames(gameResults);
     }
 
-    function renderEmpty(message) {
-      summaryStrip.hidden = true;
-      summaryStrip.innerHTML = "";
-      mobileJump.hidden = true;
-      mobileJump.classList.remove("is-visible");
-      results.innerHTML = `<div class="empty">${escapeHtml(message)}</div>`;
+    function handleConfigChange() {
+      syncConfigInputs();
+      state.schedule = [];
+      state.players = [];
+      state.scores = {};
+      state.selectedWinners = {};
+      reshuffleTeamsButton.disabled = true;
+      renderAll();
     }
 
-    function calculateAndRender() {
-      const teams = getTeams();
-      const validationMessage = validateTeams(teams);
+    [teamCountInput, playersPerTeamInput, gameCountInput].forEach((input) => {
+      input.addEventListener("change", handleConfigChange);
+      input.addEventListener("input", syncConfigInputs);
+    });
 
-      if (validationMessage) {
-        winnerBox.hidden = true;
-        winnerOptions.innerHTML = "";
-        showNotice(validationMessage);
-        renderEmpty("모든 팀의 총 핀수를 입력하면 결과가 표시됩니다.");
+    playerNamesInput.addEventListener("input", () => {
+      syncConfigInputs();
+    });
+
+    buildTeamsButton.addEventListener("click", buildTeams);
+    reshuffleTeamsButton.addEventListener("click", buildTeams);
+
+    gamesContainer.addEventListener("input", (event) => {
+      if (!event.target.matches("[data-score-input]")) return;
+      const key = scoreKey(event.target.dataset.game, event.target.dataset.team, event.target.dataset.player);
+      state.scores[key] = event.target.value.trim();
+    });
+
+    gamesContainer.addEventListener("change", (event) => {
+      if (event.target.matches("[data-score-input]")) {
+        const key = scoreKey(event.target.dataset.game, event.target.dataset.team, event.target.dataset.player);
+        state.scores[key] = event.target.value.trim();
+        renderAll();
         return;
       }
-
-      showNotice("");
-      renderWinnerOptions(teams);
-      const settlements = calculateSettlements(teams);
-      renderSummary(settlements);
-      renderResults(settlements);
-      mobileJump.hidden = false;
-      mobileJump.classList.add("is-visible");
-    }
-
-    teamCountInput.addEventListener("change", () => {
-      const count = clampTeamCount(teamCountInput.value);
-      teamCountInput.value = count;
-      renderTeams(count);
-    });
-
-    teamCountInput.addEventListener("input", () => {
-      const count = clampTeamCount(teamCountInput.value);
-      if (String(count) === teamCountInput.value || teamCountInput.value.length > 1) {
-        renderTeams(count);
-      }
-    });
-
-    teamsContainer.addEventListener("input", calculateAndRender);
-
-    winnerOptions.addEventListener("change", (event) => {
-      if (event.target.name === "winner") {
-        selectedWinnerId = event.target.value;
-        calculateAndRender();
-      }
+      if (!event.target.name || !event.target.name.startsWith("winner-")) return;
+      const gameIndex = event.target.name.replace("winner-", "");
+      state.selectedWinners[gameIndex] = event.target.value;
+      renderAll();
     });
 
     mobileJump.addEventListener("click", () => {
       resultsPanel.scrollIntoView({ behavior: "smooth", block: "start" });
     });
 
-    renderTeams(clampTeamCount(teamCountInput.value));
+    window.pinbackDebug = {
+      state,
+      buildBalancedSchedule,
+      calculateTeamSettlements,
+      calculatePersonalTotals,
+      scoreScheduleCandidate,
+      pairKey
+    };
+
+    syncConfigInputs();
+    renderAll();
   </script>
 </body>
 </html>
