@@ -993,6 +993,7 @@
             <button class="button secondary" type="button" id="reshuffleTeams" disabled>다시 섞기</button>
             <button class="button secondary" type="button" id="saveMatch" disabled>경기 저장</button>
           </div>
+          <input id="matchTitleInput" type="text" placeholder="저장 이름 비워두면 날짜로 저장" style="margin-top: 10px;">
 
           <div class="actions">
             <button class="button secondary" type="button" id="captureToggle">캡처용 보기</button>
@@ -1003,7 +1004,6 @@
 
           <div class="subsection">
             <div class="label">저장된 경기</div>
-            <input id="matchTitleInput" type="text" placeholder="저장 이름 비워두면 날짜로 저장" style="margin-top: 10px;">
             <div class="saved-list" id="savedMatches"></div>
           </div>
 
@@ -1154,9 +1154,6 @@
 
     function syncConfigInputs() {
       const config = getConfig();
-      teamCountInput.value = config.teamCount;
-      playersPerTeamInput.value = config.playersPerTeam;
-      gameCountInput.value = config.gameCount;
       const required = config.teamCount * config.playersPerTeam;
       const selected = getSelectedPeople();
       nameHint.textContent = `필요 인원: ${required}명 · 선택 ${selected.length}명`;
@@ -1166,6 +1163,14 @@
         <div class="metric"><span>팀원</span><strong>${config.playersPerTeam}명씩</strong></div>
         <div class="metric"><span>게임</span><strong>${config.gameCount}게임</strong></div>
       `;
+    }
+
+    function normalizeConfigInputs() {
+      const config = getConfig();
+      teamCountInput.value = config.teamCount;
+      playersPerTeamInput.value = config.playersPerTeam;
+      gameCountInput.value = config.gameCount;
+      return config;
     }
 
     function parseNames() {
@@ -1625,26 +1630,28 @@
 
     function renderCaptureSheet(gameResults) {
       const completeGames = gameResults.filter((game) => game.complete);
-      if (!state.schedule.length || !completeGames.length) {
-        captureSheet.innerHTML = `<div class="empty">점수를 입력하면 캡처용 요약이 표시됩니다.</div>`;
+      if (!state.schedule.length) {
+        captureSheet.innerHTML = `<div class="empty">팀을 만들면 캡처용 요약이 표시됩니다.</div>`;
         return;
       }
 
-      const personalTotals = calculatePersonalTotals(gameResults);
+      const personalTotals = completeGames.length ? calculatePersonalTotals(gameResults) : [];
       const now = new Date();
       captureSheet.innerHTML = `
         <div class="capture-head">
           <h2>핀백 정산</h2>
           <span>${now.toLocaleDateString("ko-KR")} · ${completeGames.length}/${state.schedule.length}게임</span>
         </div>
-        <div class="capture-grid">
-          ${personalTotals.map((entry) => `
-            <div class="capture-person">
-              <span>${escapeHtml(entry.player.name)}</span>
-              <strong class="${amountClass(entry.total)}">${formatMoney(entry.total)}</strong>
-            </div>
-          `).join("")}
-        </div>
+        ${personalTotals.length ? `
+          <div class="capture-grid">
+            ${personalTotals.map((entry) => `
+              <div class="capture-person">
+                <span>${escapeHtml(entry.player.name)}</span>
+                <strong class="${amountClass(entry.total)}">${formatMoney(entry.total)}</strong>
+              </div>
+            `).join("")}
+          </div>
+        ` : `<div class="empty" style="min-height: 64px;">점수 입력 전 · 팀 구성 공유용</div>`}
         <div class="capture-games">
           ${gameResults.map((game) => {
             const teamsForRender = game.complete ? game.settledTeams : game.teams;
@@ -1653,7 +1660,7 @@
                 <h3>${game.gameIndex + 1}게임${game.complete ? "" : " · 입력 중"}</h3>
                 ${teamsForRender.map((team) => `
                   <div class="capture-team">
-                    <span>${team.name}: ${team.players.map((player) => escapeHtml(player.name)).join(", ")} · ${team.complete ? won.format(team.score) : "-"}핀</span>
+                    <span>${team.name}: ${team.players.map((player) => escapeHtml(player.name)).join(", ")} · ${team.complete ? `${won.format(team.score)}핀` : "입력 전"}</span>
                     <strong class="${game.complete ? amountClass(team.total) : "zero"}">${game.complete ? formatMoney(team.total) : "-"}</strong>
                   </div>
                 `).join("")}
@@ -1777,7 +1784,19 @@
     }
 
     function handleConfigChange() {
+      const before = {
+        teamCount: state.schedule[0]?.length || null,
+        playersPerTeam: state.schedule[0]?.[0]?.length || null,
+        gameCount: state.schedule.length || null
+      };
+      const config = normalizeConfigInputs();
+      const changedExistingSchedule = state.schedule.length > 0 && (
+        before.teamCount !== config.teamCount ||
+        before.playersPerTeam !== config.playersPerTeam ||
+        before.gameCount !== config.gameCount
+      );
       syncConfigInputs();
+      if (!changedExistingSchedule) return;
       state.schedule = [];
       state.players = [];
       state.scores = {};
@@ -1789,7 +1808,13 @@
 
     [teamCountInput, playersPerTeamInput, gameCountInput].forEach((input) => {
       input.addEventListener("change", handleConfigChange);
-      input.addEventListener("input", syncConfigInputs);
+      input.addEventListener("blur", handleConfigChange);
+      input.addEventListener("input", () => {
+        const required = getConfig().teamCount * getConfig().playersPerTeam;
+        const selected = getSelectedPeople();
+        nameHint.textContent = `필요 인원: ${required}명 · 선택 ${selected.length}명`;
+        buildTeamsButton.disabled = selected.length !== required;
+      });
     });
 
     addSavedNameButton.addEventListener("click", () => {
@@ -1822,7 +1847,6 @@
         state.selectedPeopleIds.delete(event.target.value);
       }
       handleConfigChange();
-      renderPeopleList();
     });
 
     peopleList.addEventListener("click", (event) => {
