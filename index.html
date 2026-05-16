@@ -227,6 +227,17 @@
       grid-template-columns: repeat(3, 1fr);
     }
 
+    .actions.compact {
+      grid-template-columns: 1fr;
+      margin-top: 10px;
+    }
+
+    .panel-action {
+      min-height: 40px;
+      padding: 0 12px;
+      font-size: 14px;
+    }
+
     .button {
       min-height: 50px;
       border: 0;
@@ -286,6 +297,13 @@
       grid-template-columns: 1fr auto;
       gap: 8px;
       align-items: end;
+    }
+
+    .section-label-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
     }
 
     .quick-add {
@@ -589,6 +607,13 @@
       gap: 10px;
     }
 
+    .result-header-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
     .capture-panel {
       display: none;
     }
@@ -863,6 +888,7 @@
       .stats,
       .actions,
       .actions.three,
+      .result-header-row,
       .inline-add,
       .teams-grid,
       .winner-options,
@@ -974,7 +1000,10 @@
           </div>
 
           <div class="subsection">
-            <div class="label">저장된 사람</div>
+            <div class="section-label-row">
+              <div class="label">저장된 사람</div>
+              <button class="mini-button" type="button" id="clearSelection">선택 해제</button>
+            </div>
             <div class="inline-add" style="margin-top: 10px;">
               <div class="field">
                 <label for="savedNameInput">이름 추가</label>
@@ -988,22 +1017,19 @@
             <div class="people-list" id="peopleList"></div>
           </div>
 
-          <div class="actions three">
+          <div class="actions">
             <button class="button" type="button" id="buildTeams">팀 만들기</button>
             <button class="button secondary" type="button" id="reshuffleTeams" disabled>다시 섞기</button>
-            <button class="button secondary" type="button" id="saveMatch" disabled>경기 저장</button>
-          </div>
-          <input id="matchTitleInput" type="text" placeholder="저장 이름 비워두면 날짜로 저장" style="margin-top: 10px;">
-
-          <div class="actions">
-            <button class="button secondary" type="button" id="captureToggle">캡처용 보기</button>
-            <button class="button secondary" type="button" id="clearSelection">선택 해제</button>
           </div>
 
           <div class="notice" id="notice" role="alert"></div>
 
           <div class="subsection">
             <div class="label">저장된 경기</div>
+            <input id="matchTitleInput" type="text" placeholder="저장 이름 비워두면 날짜로 저장" style="margin-top: 10px;">
+            <div class="actions compact">
+              <button class="button secondary" type="button" id="saveMatch" disabled>경기 저장</button>
+            </div>
             <div class="saved-list" id="savedMatches"></div>
           </div>
 
@@ -1018,8 +1044,13 @@
       <div class="content-stack">
         <section class="panel" id="resultsPanel">
           <div class="panel-header">
-            <h2>개인별 최종 정산</h2>
-            <p>각 게임에서 본인이 속한 팀 금액을 그대로 누적합니다.</p>
+            <div class="result-header-row">
+              <div>
+                <h2>개인별 최종 정산</h2>
+                <p>각 게임에서 본인이 속한 팀 금액을 그대로 누적합니다.</p>
+              </div>
+              <button class="button secondary panel-action" type="button" id="captureToggle">캡처용 보기</button>
+            </div>
           </div>
           <div class="panel-body">
             <div id="personalResults" class="result-list">
