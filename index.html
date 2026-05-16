@@ -381,7 +381,14 @@
       font-size: 13px;
       font-weight: 900;
       text-align: right;
-      white-space: nowrap;
+      line-height: 1.35;
+    }
+
+    .team-total small {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
     }
 
     .player-list {
@@ -426,6 +433,10 @@
       background: rgba(244, 236, 221, 0.5);
       font-size: 14px;
       font-weight: 900;
+    }
+
+    .winner-zone:empty {
+      display: none;
     }
 
     .amount {
@@ -986,16 +997,17 @@
       if (!game) return [];
 
       return game.map((players, teamIndex) => {
-        let total = 0;
+        let rawScore = 0;
         let complete = true;
         const playerScores = players.map((player) => {
           const raw = state.scores[scoreKey(gameIndex, teamIndex, player.id)] || "";
           const score = Number(raw);
           const valid = raw !== "" && Number.isFinite(score) && score >= 0;
           if (!valid) complete = false;
-          if (valid) total += score;
+          if (valid) rawScore += score;
           return { player, raw, score: valid ? score : null };
         });
+        const score = Math.floor(rawScore / 10) * 10;
 
         return {
           id: `game-${gameIndex}-team-${teamIndex}`,
@@ -1004,7 +1016,8 @@
           name: `${teamIndex + 1}팀`,
           players,
           playerScores,
-          score: total,
+          rawScore,
+          score,
           complete
         };
       });
@@ -1102,6 +1115,7 @@
               gameIndex: game.gameIndex,
               teamName: team.name,
               teamScore: team.score,
+              rawTeamScore: team.rawScore,
               amount: team.total
             });
           });
@@ -1129,6 +1143,12 @@
       `;
     }
 
+    function renderTeamTotal(team) {
+      if (!team.complete) return "-";
+      const rawLabel = team.rawScore !== team.score ? `<small>입력 ${won.format(team.rawScore)}핀</small>` : "";
+      return `계산 ${won.format(team.score)}핀${rawLabel}`;
+    }
+
     function renderGames(gameResults) {
       if (!state.schedule.length) {
         gamesContainer.innerHTML = `<div class="panel"><div class="empty">참가자 명단을 입력한 뒤 팀을 만들어 주세요.</div></div>`;
@@ -1145,14 +1165,14 @@
           <article class="game">
             <div class="game-head">
               <h3>${game.gameIndex + 1}게임</h3>
-              <div class="game-status">${completeCount}/${game.teams.length}팀 점수 입력</div>
+              <div class="game-status" data-game-status="${game.gameIndex}">${completeCount}/${game.teams.length}팀 점수 입력</div>
             </div>
             <div class="teams-grid">
               ${teamsForRender.map((team) => `
-                <section class="team-card ${team.isWinner ? "is-winner" : ""}">
+                <section class="team-card ${team.isWinner ? "is-winner" : ""}" data-team-card data-game="${game.gameIndex}" data-team="${team.teamIndex}">
                   <div class="team-card-head">
-                    <div class="team-title">${team.name}${team.isWinner ? " · 최종 1등" : ""}</div>
-                    <div class="team-total">합계 ${team.complete ? `${won.format(team.score)}핀` : "-"}</div>
+                    <div class="team-title" data-team-title>${team.name}${team.isWinner ? " · 최종 1등" : ""}</div>
+                    <div class="team-total" data-team-total>합계 ${renderTeamTotal(team)}</div>
                   </div>
                   <div class="player-list">
                     ${team.playerScores.map(({ player, raw }) => `
@@ -1164,12 +1184,12 @@
                   </div>
                   <div class="team-result">
                     <span>개인별 적용 금액</span>
-                    <strong class="amount ${game.complete ? amountClass(team.total) : "zero"}">${game.complete ? formatMoney(team.total) : "-"}</strong>
+                    <strong class="amount ${game.complete ? amountClass(team.total) : "zero"}" data-team-amount>${game.complete ? formatMoney(team.total) : "-"}</strong>
                   </div>
                 </section>
               `).join("")}
             </div>
-            ${renderWinnerOptions(game, topTeams)}
+            <div class="winner-zone" data-winner-zone data-game="${game.gameIndex}">${renderWinnerOptions(game, topTeams)}</div>
           </article>
         `;
       }).join("");
@@ -1218,6 +1238,41 @@
       `).join("");
     }
 
+    function updateGameLiveDisplays(gameResults) {
+      gameResults.forEach((game) => {
+        const completeCount = game.teams.filter((team) => team.complete).length;
+        const status = gamesContainer.querySelector(`[data-game-status="${game.gameIndex}"]`);
+        if (status) status.textContent = `${completeCount}/${game.teams.length}팀 점수 입력`;
+
+        const teamsForRender = game.complete ? game.settledTeams : game.teams;
+        teamsForRender.forEach((team) => {
+          const card = gamesContainer.querySelector(`[data-team-card][data-game="${game.gameIndex}"][data-team="${team.teamIndex}"]`);
+          if (!card) return;
+          card.classList.toggle("is-winner", Boolean(team.isWinner));
+          const title = card.querySelector("[data-team-title]");
+          if (title) title.textContent = `${team.name}${team.isWinner ? " · 최종 1등" : ""}`;
+          const total = card.querySelector("[data-team-total]");
+          if (total) total.innerHTML = `합계 ${renderTeamTotal(team)}`;
+          const amount = card.querySelector("[data-team-amount]");
+          if (amount) {
+            amount.textContent = game.complete ? formatMoney(team.total) : "-";
+            amount.className = `amount ${game.complete ? amountClass(team.total) : "zero"}`;
+          }
+        });
+
+        const maxScore = game.complete ? Math.max(...game.teams.map((team) => team.score)) : null;
+        const topTeams = game.complete ? game.settledTeams.filter((team) => team.score === maxScore) : [];
+        const winnerZone = gamesContainer.querySelector(`[data-winner-zone][data-game="${game.gameIndex}"]`);
+        if (winnerZone) winnerZone.innerHTML = renderWinnerOptions(game, topTeams);
+      });
+    }
+
+    function updateLiveOutputs() {
+      const gameResults = calculateAllGames();
+      renderPersonalResults(gameResults);
+      updateGameLiveDisplays(gameResults);
+    }
+
     function renderAll() {
       syncConfigInputs();
       const gameResults = calculateAllGames();
@@ -1251,19 +1306,20 @@
       if (!event.target.matches("[data-score-input]")) return;
       const key = scoreKey(event.target.dataset.game, event.target.dataset.team, event.target.dataset.player);
       state.scores[key] = event.target.value.trim();
+      updateLiveOutputs();
     });
 
     gamesContainer.addEventListener("change", (event) => {
       if (event.target.matches("[data-score-input]")) {
         const key = scoreKey(event.target.dataset.game, event.target.dataset.team, event.target.dataset.player);
         state.scores[key] = event.target.value.trim();
-        renderAll();
+        updateLiveOutputs();
         return;
       }
       if (!event.target.name || !event.target.name.startsWith("winner-")) return;
       const gameIndex = event.target.name.replace("winner-", "");
       state.selectedWinners[gameIndex] = event.target.value;
-      renderAll();
+      updateLiveOutputs();
     });
 
     mobileJump.addEventListener("click", () => {
@@ -1275,6 +1331,7 @@
       buildBalancedSchedule,
       calculateTeamSettlements,
       calculatePersonalTotals,
+      calculateAllGames,
       scoreScheduleCandidate,
       pairKey
     };
