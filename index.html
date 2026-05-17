@@ -345,6 +345,25 @@
       accent-color: var(--accent);
     }
 
+    .option-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 48px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fffdf7;
+      padding: 10px 12px;
+      margin-top: 12px;
+      font-weight: 900;
+    }
+
+    .option-toggle input {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--accent);
+    }
+
     .mini-button {
       min-height: 34px;
       border: 1px solid var(--line);
@@ -998,6 +1017,10 @@
               <input id="gameCount" type="number" min="1" max="12" step="1" value="4" inputmode="numeric">
             </div>
           </div>
+          <label class="option-toggle">
+            <input id="winnerBonusToggle" type="checkbox" checked>
+            <span>본방 2,000원 적용</span>
+          </label>
 
           <div class="subsection">
             <div class="section-label-row">
@@ -1094,6 +1117,7 @@
     const addSavedNameButton = document.querySelector("#addSavedName");
     const bulkNamesInput = document.querySelector("#bulkNames");
     const addBulkNamesButton = document.querySelector("#addBulkNames");
+    const winnerBonusToggle = document.querySelector("#winnerBonusToggle");
     const peopleList = document.querySelector("#peopleList");
     const buildTeamsButton = document.querySelector("#buildTeams");
     const reshuffleTeamsButton = document.querySelector("#reshuffleTeams");
@@ -1125,6 +1149,7 @@
       schedule: [],
       scores: {},
       selectedWinners: {},
+      useWinnerBonus: true,
       isCaptureMode: false
     };
 
@@ -1456,6 +1481,7 @@
     }
 
     function calculateTeamSettlements(teams, winnerId) {
+      const bonusAmount = state.useWinnerBonus ? WINNER_BONUS : 0;
       const totals = new Map(teams.map((team) => [team.id, 0]));
       const details = new Map(teams.map((team) => [team.id, []]));
 
@@ -1476,12 +1502,12 @@
             aDelta -= baseAmount;
           }
 
-          if (a.id === winnerId) {
-            aDelta += WINNER_BONUS;
-            bDelta -= WINNER_BONUS;
-          } else if (b.id === winnerId) {
-            bDelta += WINNER_BONUS;
-            aDelta -= WINNER_BONUS;
+          if (bonusAmount && a.id === winnerId) {
+            aDelta += bonusAmount;
+            bDelta -= bonusAmount;
+          } else if (bonusAmount && b.id === winnerId) {
+            bDelta += bonusAmount;
+            aDelta -= bonusAmount;
           }
 
           totals.set(a.id, totals.get(a.id) + aDelta);
@@ -1759,7 +1785,8 @@
         players: state.players,
         schedule: state.schedule,
         scores: state.scores,
-        selectedWinners: state.selectedWinners
+        selectedWinners: state.selectedWinners,
+        useWinnerBonus: state.useWinnerBonus
       };
     }
 
@@ -1800,6 +1827,8 @@
       state.schedule = match.schedule;
       state.scores = match.scores || {};
       state.selectedWinners = match.selectedWinners || {};
+      state.useWinnerBonus = match.useWinnerBonus !== false;
+      winnerBonusToggle.checked = state.useWinnerBonus;
       reshuffleTeamsButton.disabled = false;
       saveMatchButton.disabled = false;
       renderPeopleList();
@@ -1895,6 +1924,10 @@
     buildTeamsButton.addEventListener("click", buildTeams);
     reshuffleTeamsButton.addEventListener("click", buildTeams);
     saveMatchButton.addEventListener("click", saveCurrentMatch);
+    winnerBonusToggle.addEventListener("change", () => {
+      state.useWinnerBonus = winnerBonusToggle.checked;
+      updateLiveOutputs();
+    });
 
     clearSelectionButton.addEventListener("click", () => {
       state.selectedPeopleIds.clear();
@@ -1902,11 +1935,37 @@
       renderPeopleList();
     });
 
+    function applyCaptureMode(enabled) {
+      state.isCaptureMode = enabled;
+      document.body.classList.toggle("capture-mode", enabled);
+      captureToggleButton.textContent = enabled ? "일반 보기" : "캡처용 보기";
+      if (enabled) window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function enterCaptureMode() {
+      applyCaptureMode(true);
+      if (location.hash !== "#capture") {
+        history.pushState({ pinbackCapture: true }, "", "#capture");
+      }
+    }
+
+    function exitCaptureMode(cleanUrl) {
+      applyCaptureMode(false);
+      if (cleanUrl && location.hash === "#capture") {
+        history.replaceState(null, "", location.href.split("#")[0]);
+      }
+    }
+
     captureToggleButton.addEventListener("click", () => {
-      state.isCaptureMode = !state.isCaptureMode;
-      document.body.classList.toggle("capture-mode", state.isCaptureMode);
-      captureToggleButton.textContent = state.isCaptureMode ? "일반 보기" : "캡처용 보기";
-      if (state.isCaptureMode) window.scrollTo({ top: 0, behavior: "smooth" });
+      if (state.isCaptureMode) {
+        exitCaptureMode(true);
+      } else {
+        enterCaptureMode();
+      }
+    });
+
+    window.addEventListener("popstate", () => {
+      if (state.isCaptureMode) exitCaptureMode(false);
     });
 
     savedMatchesList.addEventListener("click", (event) => {
